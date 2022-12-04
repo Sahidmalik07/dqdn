@@ -2,6 +2,7 @@ from pyrogram import filters, Client, enums
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database.connections_mdb import add_connection, all_connections, if_active, delete_connection
 from info import ADMINS
+from utils import temp 
 import logging
 
 logger = logging.getLogger(__name__)
@@ -58,12 +59,17 @@ async def addconnection(client, message):
                 await message.reply_text(
                     f"Successfully connected to **{title}**\nNow manage your group from my pm !",
                     quote=True,
+                    reply_markup=InlineKeyboardMarkup(
+                                           [[
+                                             InlineKeyboardButton('click to go pm', url=f"https://t.me/{temp.U_NAME}"),
+                                           ]]
+                    ),
                     parse_mode=enums.ParseMode.MARKDOWN
                 )
                 if chat_type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
                     await client.send_message(
                         userid,
-                        f"Connected to **{title}** !",
+                        f"Connected to **{title}**\n\nTipe 👉 /settings and manage your settings",
                         parse_mode=enums.ParseMode.MARKDOWN
                     )
             else:
