@@ -1,6 +1,7 @@
-# https://github.com/odysseusmax/animated-lamp/blob/master/bot/database/database.py
+# @sahid_malik
 import motor.motor_asyncio
-from info import DATABASE_NAME, DATABASE_URI, IMDB, IMDB_TEMPLATE, MELCOW_NEW_USERS, P_TTI_SHOW_OFF, SINGLE_BUTTON, SPELL_CHECK_REPLY, PROTECT_CONTENT, AUTO_DELETE, AUTO_FFILTER
+from info import DB_AUTO_DELETE, AUTO_FFILTER, AUTO_DELETE, AUTO_DELETE2, DATABASE_NAME, DATABASE_URI, IMDB, IMDB_TEMPLATE, MELCOW_NEW_USERS, P_TTI_SHOW_OFF, SINGLE_BUTTON, SPELL_CHECK_REPLY, PROTECT_CONTENT
+from datetime import datetime
 
 class Database:
     
@@ -9,7 +10,7 @@ class Database:
         self.db = self._client[database_name]
         self.col = self.db.users
         self.grp = self.db.groups
-
+        self.misc = self.db.misc
 
     def new_user(self, id, name):
         return dict(
@@ -20,7 +21,6 @@ class Database:
                 ban_reason="",
             ),
         )
-
 
     def new_group(self, id, title):
         return dict(
@@ -84,7 +84,6 @@ class Database:
         return b_users, b_chats
     
 
-
     async def add_chat(self, chat, title):
         chat = self.new_group(chat, title)
         await self.grp.insert_one(chat)
@@ -114,8 +113,10 @@ class Database:
             'imdb': IMDB,
             'spell_check': SPELL_CHECK_REPLY,
             'welcome': MELCOW_NEW_USERS,
-            'auto_delete': AUTO_DELETE,
-            'auto_ffilter': AUTO_FFILTER,
+            'manual_filter': AUTO_DELETE,
+            'auto_deletee': AUTO_DELETE2,
+            'spell_auto_delete': AUTO_FFILTER,
+            'auto_filters': DB_AUTO_DELETE,
             'template': IMDB_TEMPLATE
         }
         chat = await self.grp.find_one({'id':int(id)})
@@ -143,6 +144,82 @@ class Database:
 
     async def get_db_size(self):
         return (await self.db.command("dbstats"))['dataSize']
+    
+    async def get_notcopy_user(self, user_id):
+
+        user_id = int(user_id)
+
+        user = await self.misc.find_one({"user_id": user_id})
+
+        if not user:
+            res = {
+                "user_id": user_id,
+                "last_verified": datetime(2020, 5, 17),
+            }
+
+            user = await self.misc.insert_one(res)
+
+        return user
+
+    async def update_notcopy_user(self, user_id, value:dict):
+        user_id = int(user_id)
+        myquery = {"user_id": user_id}
+        newvalues = { "$set": value }
+        await self.misc.update_one(myquery, newvalues)
+
+    async def is_user_verified(self, user_id):
+        user = await self.get_notcopy_user(user_id)
+        
+        try:
+            pastDate = user["last_verified"]
+        except:
+            user = await self.get_notcopy_user(user_id)
+            pastDate = user["last_verified"]
+
+        if (datetime.now() - pastDate).days > 0.1:
+            return False
+        else:
+            return True
+
+#pm verify 
+
+    async def get_nottcopy_user(self, user_id):
+
+        user_id = int(user_id)
+
+        user = await self.misc.find_one({"user_id": user_id})
+
+        if not user:
+            res = {
+                "user_id": user_id,
+                "last_verified": datetime(2020, 5, 17),
+            }
+
+            user = await self.misc.insert_one(res)
+
+        return user
+
+    async def update_nottcopy_user(self, user_id, value:dict):
+        user_id = int(user_id)
+        myquery = {"user_id": user_id}
+        newvalues = { "$set": value }
+        await self.misc.update_one(myquery, newvalues)
+
+    async def is_user_verified(self, user_id):
+        user = await self.get_nottcopy_user(user_id)
+        
+        try:
+            pastDate = user["last_verified"]
+        except:
+            user = await self.get_nottcopy_user(user_id)
+            pastDate = user["last_verified"]
+
+        if (datetime.now() - pastDate).days > 0.1:
+            return False
+        else:
+            return True
+
+
 
 
 db = Database(DATABASE_URI, DATABASE_NAME)
