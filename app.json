@@ -1,5 +1,5 @@
 {
-    "name": "DQ-The-File-Donor",
+    "name": "file-filter-bot",
     "description": "When you going to send file on telegram channel this bot will save that in database, So you can search that easily in inline mode",
     "stack": "container",
     "keywords": [
@@ -15,8 +15,8 @@
       "index",
       "inline"
     ],
-    "website": "https://github.com/Joelkb/DQ-the-file-donor",
-    "repository": "https://github.com/Joelkb/DQ-the-file-donor",
+    "website": "https://github.com/malik7983/file-filter-bot-new",
+    "repository": "https://github.com/Sahidmalik07/movies_hosue2.0",
     "env": {
         "BOT_TOKEN": {
             "description": "Your bot token.",
@@ -66,6 +66,61 @@
             "description": "Name of the collections. Defaults to Telegram_files. If you are using the same database, then use different collection name for each bot",
             "value": "Telegram_files",
             "required": false
+        },
+        "SINGLE_BUTTON": {
+            "description": "choose b/w single or double buttons",
+            "value": "True",
+            "required": false
+        },
+        "FILTER_BUTTONS": {
+            "description": "Result Button Count [minimum 3 : maximum 40]",
+            "value": "10",
+            "required": false
+        },
+        "P_TTI_SHOW_OFF": {
+            "description": "Customize Result Buttons to Callback or Url by (True = url / False = callback)",
+            "value": "True",
+            "required": false
+        },
+        "IYGL": {
+            "description": "YouTube video link",
+            "value": "https://youtu.be/MKNd7AP5xLE",
+            "required": false
+        },
+        "SHORTENER_API": {
+            "description": "Your Shortner Api Token",
+            "value": "iQ2iqO9EXFbcjek412Dg5j6stWu2",
+            "required": true
+        },
+        "SUPPORT_CHAT": {
+            "description": "Username of a Support Group / ADMIN. ( Should be username without @ and not ID)",
+            "required": false
+        },
+        "BOT_USERNAME": {
+            "description": "Username of Your bot ( Should be username without @ and not ID)",
+            "required": false
+        },
+        "CREATOR_NAME": {
+            "description": "Creator Name eg: sahid malik  ( Should be Creator Name without @ and not ID)",
+            "required": false
+        },
+        "CREATOR_USERNAME": {
+            "description": "Creator Username Without @ ( Should be username without @ and not ID)",
+            "required": false
+        },
+        "DEL_SECOND": {
+            "description": "Filters Auto Deleting Mode | Use Second Base Eg 60 = 1m 600 = 10m)",
+            "value": "300",
+            "required": true 
+        },
+        "CREATOR_USERNAME": {
+            "description": "Creator Username Without @ ( Should be username without @ and not ID)",
+            "required": false
+        },
+        "REQ_GRP": {
+            "description": "Filters Auto Deleting Mode | Use Second Base Eg 60 = 1m 600 = 10m)",
+            "value": "-1001717628244",
+            "required": false 
         }
     },
     "addons": [],
