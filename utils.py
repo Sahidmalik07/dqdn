@@ -1,12 +1,12 @@
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid
-from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM
-from imdb import Cinemagoer 
+from info import CREATOR_USERNAME, CREATOR_NAME, FILTER_BUTTONS, AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORT_URL, SHORTENER_API, SHORTENER_WEBSITE
+from imdb import Cinemagoer
 import asyncio
 from pyrogram.types import Message, InlineKeyboardButton
 from pyrogram import enums
-from typing import Union
-import random 
+from typing import Union, Union
+from shortzy import Shortzy
 import re
 import os
 from datetime import datetime
@@ -14,13 +14,14 @@ from typing import List
 from database.users_chats_db import db
 from bs4 import BeautifulSoup
 import requests
-
+from shortzy import Shortzy
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 BTN_URL_REGEX = re.compile(
     r"(\[([^\[]+?)\]\((buttonurl|buttonalert):(?:/{0,2})(.+?)(:same)?\))"
 )
+
 
 imdb = Cinemagoer() 
 
@@ -40,6 +41,9 @@ class temp(object):
     U_NAME = None
     B_NAME = None
     SETTINGS = {}
+    multi_buttons = int(FILTER_BUTTONS)
+    NAME = CREATOR_NAME
+    USERNAME = CREATOR_USERNAME
 
 async def is_subscribed(bot, query):
     try:
@@ -376,3 +380,13 @@ def humanbytes(size):
         size /= power
         n += 1
     return str(round(size, 2)) + " " + Dic_powerN[n] + 'B'
+
+async def get_shortlink(url):
+    if SHORT_URL:
+        shortzy = Shortzy(SHORTENER_API, SHORTENER_WEBSITE)
+        try:
+            url = await shortzy.convert(url)
+        except Exception as e:
+            url = await shortzy.get_quick_link(url)
+
+    return url
